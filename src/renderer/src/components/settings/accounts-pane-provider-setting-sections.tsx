@@ -2,7 +2,7 @@ import { translate } from '@/i18n/i18n'
 import { Button } from '../ui/button'
 import { Label } from '../ui/label'
 import { Switch } from '../ui/switch'
-import { GeminiIcon, OpenCodeGoIcon } from '../status-bar/icons'
+import { AntigravityIcon, OpenCodeGoIcon } from '../status-bar/icons'
 import { SearchableSetting } from './SearchableSetting'
 import type { AccountsPaneSectionModel } from './accounts-pane-types'
 import { OpenCodeGoCredentials } from './accounts-pane-opencode-credentials'
@@ -15,7 +15,7 @@ export function renderGeminiAccountsSection(model: AccountsPaneSectionModel): Re
     <section key="gemini" id="accounts-gemini" className="space-y-4 scroll-mt-6">
       <div className="space-y-1">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <GeminiIcon size={16} />
+          <AntigravityIcon size={16} />
           {translate('auto.components.settings.AccountsPane.antigravityTitle', 'Antigravity')}
         </h3>
         <p className="text-xs text-muted-foreground">
@@ -41,7 +41,6 @@ export function renderGeminiAccountsSection(model: AccountsPaneSectionModel): Re
           'cli',
           'oauth',
           'credentials',
-          'experimental',
           'rate limit',
           'status bar'
         ]}
@@ -50,8 +49,8 @@ export function renderGeminiAccountsSection(model: AccountsPaneSectionModel): Re
         <div className="space-y-0.5">
           <Label>
             {translate(
-              'auto.components.settings.AccountsPane.useAntigravityCredentialsExp',
-              'Use Antigravity credentials (experimental)'
+              'auto.components.settings.AccountsPane.useAntigravityCredentials',
+              'Use Antigravity credentials'
             )}
           </Label>
           <p className="text-xs text-muted-foreground">
@@ -64,8 +63,8 @@ export function renderGeminiAccountsSection(model: AccountsPaneSectionModel): Re
         </div>
         <Switch
           aria-label={translate(
-            'auto.components.settings.AccountsPane.useAntigravityCredentialsExp',
-            'Use Antigravity credentials (experimental)'
+            'auto.components.settings.AccountsPane.useAntigravityCredentials',
+            'Use Antigravity credentials'
           )}
           checked={settings.geminiCliOAuthEnabled}
           onCheckedChange={(checked) => {
