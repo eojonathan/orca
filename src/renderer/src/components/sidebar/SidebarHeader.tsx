@@ -21,7 +21,6 @@ const SidebarHeader = React.memo(function SidebarHeader({
   // Subscribe this memoized header to locale changes before using translate().
   useTranslation()
   const sidebarBody = useAppStore((s) => s.sidebarBody ?? 'workspaces')
-  const groupBy = useAppStore((s) => s.groupBy)
   const setSidebarBody = useAppStore((s) => s.setSidebarBody)
   const updateSettings = useAppStore((s) => s.updateSettings)
   const agentsViewActive = sidebarBody === 'agents'
@@ -36,7 +35,10 @@ const SidebarHeader = React.memo(function SidebarHeader({
   const acknowledgeIntro = React.useCallback(() => {
     void updateSettings?.({ agentsSidebarIntroShown: true })
   }, [updateSettings])
-  const sidebarTitle = groupBy === 'repo' ? 'Projects' : 'Workspaces'
+  const sidebarTitle =
+    groupBy === 'repo'
+      ? translate('auto.components.sidebar.SidebarHeader.projects', 'Projects')
+      : translate('auto.components.sidebar.SidebarHeader.workspaces', 'Workspaces')
   const activityLabel = translate(
     agentsViewActive ? 'dashboard.sidebar.closeActivity' : 'dashboard.sidebar.openActivity',
     agentsViewActive ? 'Turn off activity view' : 'View activity'

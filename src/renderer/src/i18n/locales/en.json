@@ -5255,7 +5255,9 @@
           "ca6f729da2": "New workspace ({{value0}})",
           "a30e34eb5c": "Close workspace board",
           "views": "Sidebar view",
-          "moreActions": "More workspace actions"
+          "moreActions": "More workspace actions",
+          "projects": "Projects",
+          "workspaces": "Workspaces"
         },
         "SidebarNav": {
           "80611a8b10": "Search",
