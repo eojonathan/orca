@@ -1,4 +1,4 @@
-import { runProcess } from '../../shared/child-process/run-process'
+import { runProcess } from '@orca/process-host'
 import { readWindowsProcessTable } from '../windows/windows-process-table'
 
 export type AntigravityEndpoint = {
