@@ -1,0 +1,36 @@
+{
+  "manifestVersion": 1,
+  "id": "orca-ci-monitor",
+  "publisher": "stablyai",
+  "name": "CI/CD & Deploy Preview Monitor",
+  "version": "1.0.0",
+  "description": "Acompanhe pipelines de CI/CD, status de workflows do GitHub Actions e links de deploy preview diretamente da branch da sua worktree ativa, com execução rápida de comandos no terminal.",
+  "repository": "https://github.com/stablyai/orca-ci-monitor",
+  "engines": { "orca": ">=1.4.0" },
+  "pluginApi": 1,
+  "main": "main.mjs",
+  "contributes": {
+    "panels": [
+      {
+        "id": "ci-monitor",
+        "title": "CI/CD Monitor",
+        "icon": "rocket",
+        "entry": "panel.html"
+      }
+    ],
+    "commands": [
+      {
+        "id": "ci.refreshBranchStatus",
+        "title": "CI: Refresh Branch Status"
+      }
+    ],
+    "events": [{ "on": "worktree.created" }]
+  },
+  "capabilities": [
+    { "kind": "workspace:read" },
+    { "kind": "terminal:send" },
+    { "kind": "notifications:show" },
+    { "kind": "storage" },
+    { "kind": "events:subscribe" }
+  ]
+}

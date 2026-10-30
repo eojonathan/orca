@@ -1,0 +1,34 @@
+{
+  "manifestVersion": 1,
+  "id": "orca-services-inspector",
+  "publisher": "stablyai",
+  "name": "Database & Services Inspector",
+  "version": "1.0.0",
+  "description": "Inspeção e diagnóstico de infraestrutura local: monitora integridade de bancos de dados (PostgreSQL, Redis), containers Docker e servidores de desenvolvimento ativos na worktree.",
+  "repository": "https://github.com/stablyai/orca-services-inspector",
+  "engines": { "orca": ">=1.4.0" },
+  "pluginApi": 1,
+  "main": "main.mjs",
+  "contributes": {
+    "panels": [
+      {
+        "id": "services-inspector",
+        "title": "Services Inspector",
+        "icon": "database",
+        "entry": "panel.html"
+      }
+    ],
+    "commands": [
+      {
+        "id": "services.inspectLocal",
+        "title": "Inspect Local Services"
+      }
+    ]
+  },
+  "capabilities": [
+    { "kind": "workspace:read" },
+    { "kind": "terminal:send" },
+    { "kind": "notifications:show" },
+    { "kind": "storage" }
+  ]
+}

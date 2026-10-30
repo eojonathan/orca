@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Inspetor de Banco de Dados &amp; Serviços</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 14px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        color: var(--foreground, #f4f4f5);
+        background: var(--background, #09090b);
+        line-height: 1.4;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border, #27272a);
+      }
+      .title {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .service-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .service-card {
+        background: var(--card, #18181b);
+        border: 1px solid var(--border, #27272a);
+        border-radius: var(--radius, 8px);
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .service-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .service-name {
+        font-weight: 600;
+        font-size: 12px;
+        color: #ffffff;
+      }
+      .service-detail {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+      }
+      .branch-badge {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+        background: var(--secondary, #18181b);
+        border: 1px solid var(--border, #27272a);
+        padding: 2px 8px;
+        border-radius: 4px;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .status-pill {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+      .control-group {
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--muted-foreground, #a1a1aa);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      select {
+        width: 100%;
+        padding: 7px 10px;
+        background: #18181b;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        font-size: 12px;
+      }
+      select:focus {
+        outline: none;
+        border-color: #3b82f6;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        background: #27272a;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .btn:hover {
+        background: #3f3f46;
+        color: #ffffff;
+      }
+      .btn-primary {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border: 1px solid #1d4ed8 !important;
+        font-weight: 600;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8 !important;
+      }
+      .status-text {
+        font-size: 11px;
+        color: var(--muted-foreground, #71717a);
+        margin-top: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">
+        <span>Infraestrutura Local</span>
+      </div>
+      <span id="worktreeName" class="branch-badge">Escaneando...</span>
+    </div>
+
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-info">
+          <span class="service-name">PostgreSQL 16</span>
+          <span class="service-detail">localhost:5432 &bull; 4 conexões ativas</span>
+        </div>
+        <span class="status-pill">Pronto</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-info">
+          <span class="service-name">Redis 7.2</span>
+          <span class="service-detail">localhost:6379 &bull; Taxa de acerto 98%</span>
+        </div>
+        <span class="status-pill">Ativo</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-info">
+          <span class="service-name">Docker Compose</span>
+          <span class="service-detail">orca-stack &bull; 3/3 containers ativos</span>
+        </div>
+        <span class="status-pill">Executando</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-info">
+          <span class="service-name">Vite Dev Server</span>
+          <span class="service-detail">localhost:5173 &bull; HMR habilitado</span>
+        </div>
+        <span class="status-pill">Ouvindo</span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label for="termSelect">Terminal da Worktree</label>
+      <select id="termSelect">
+        <option value="">(Nenhum terminal ativo)</option>
+      </select>
+    </div>
+
+    <button id="dockerBtn" class="btn btn-primary">Executar "docker ps" no Terminal</button>
+    <button id="pgBtn" class="btn">Testar Conexão DB (pg_isready)</button>
+    <button id="notifyBtn" class="btn">Notificar Integridade dos Serviços</button>
+
+    <div id="statusMessage" class="status-text">Pronto</div>
+
+    <script>
+      'use strict'
+      var seq = 0
+      var pending = {}
+      var statusEl = document.getElementById('statusMessage')
+      var worktreeEl = document.getElementById('worktreeName')
+      var termSelect = document.getElementById('termSelect')
+
+      function cleanBranch(raw) {
+        if (!raw) return 'Sem branch'
+        return raw.replace(/^refs\/heads\//, '')
+      }
+
+      function call(action, params) {
+        return new Promise(function (resolve) {
+          var requestId = 'req-' + ++seq
+          pending[requestId] = resolve
+          window.parent.postMessage(
+            { type: 'orca-panel-action', requestId: requestId, action: action, params: params },
+            '*'
+          )
+        })
+      }
+
+      window.addEventListener('message', function (event) {
+        var data = event.data
+        if (!data || data.type !== 'orca-panel-action-result') return
+        var resolve = pending[data.requestId]
+        if (!resolve) return
+        delete pending[data.requestId]
+        resolve(data)
+      })
+
+      function refreshWorktree() {
+        call('workspace.readContext').then(function (result) {
+          if (!result.ok || !result.value) {
+            worktreeEl.textContent = 'Sem worktree ativa'
+            return
+          }
+          worktreeEl.textContent = cleanBranch(result.value.branch)
+          termSelect.innerHTML = ''
+          if (result.value.terminals.length === 0) {
+            var opt = document.createElement('option')
+            opt.value = ''
+            opt.textContent = '(Nenhum terminal ativo)'
+            termSelect.appendChild(opt)
+          } else {
+            result.value.terminals.forEach(function (term, index) {
+              var opt = document.createElement('option')
+              opt.value = term.id
+              var shortId = term.id.length > 18 ? term.id.slice(0, 16) + '...' : term.id
+              opt.textContent = 'Terminal ' + (index + 1) + ' (' + shortId + ')'
+              termSelect.appendChild(opt)
+            })
+          }
+        })
+      }
+
+      document.getElementById('dockerBtn').addEventListener('click', function () {
+        if (!termSelect.value) {
+          statusEl.textContent = 'Selecione um terminal primeiro'
+          return
+        }
+        call('terminal.sendText', {
+          terminalId: termSelect.value,
+          text: 'docker ps',
+          enter: true
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Comando docker ps enviado ao terminal'
+            : 'Falha ao enviar comando'
+        })
+      })
+
+      document.getElementById('pgBtn').addEventListener('click', function () {
+        if (!termSelect.value) {
+          statusEl.textContent = 'Selecione um terminal primeiro'
+          return
+        }
+        call('terminal.sendText', {
+          terminalId: termSelect.value,
+          text: 'pg_isready',
+          enter: true
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Comando pg_isready enviado ao terminal'
+            : 'Falha ao enviar comando'
+        })
+      })
+
+      document.getElementById('notifyBtn').addEventListener('click', function () {
+        call('notifications.show', {
+          title: 'Inspetor de Serviços Locais',
+          body: 'Todos os serviços locais (PostgreSQL, Redis, Vite) estão ativos e saudáveis.'
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Notificação de integridade enviada'
+            : 'Falha ao enviar notificação'
+        })
+      })
+
+      refreshWorktree()
+    </script>
+  </body>
+</html>

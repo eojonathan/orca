@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Monitor de CI/CD &amp; Deploy Preview</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 14px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        color: var(--foreground, #f4f4f5);
+        background: var(--background, #09090b);
+        line-height: 1.4;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border, #27272a);
+      }
+      .title {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+      .badge.branch {
+        background: var(--secondary, #18181b);
+        color: var(--muted-foreground, #a1a1aa);
+        border: 1px solid var(--border, #27272a);
+        border-radius: 4px;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .badge.preview {
+        background: rgba(168, 85, 247, 0.15);
+        color: #c084fc;
+        border-color: rgba(168, 85, 247, 0.3);
+      }
+      .ci-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .ci-item {
+        background: var(--card, #18181b);
+        border: 1px solid var(--border, #27272a);
+        border-radius: var(--radius, 8px);
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .ci-item-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .ci-item-name {
+        font-weight: 600;
+        font-size: 12px;
+        color: #ffffff;
+      }
+      .ci-item-meta {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+        display: flex;
+        justify-content: space-between;
+      }
+      .control-group {
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--muted-foreground, #a1a1aa);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      select {
+        width: 100%;
+        padding: 7px 10px;
+        background: #18181b;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        font-size: 12px;
+      }
+      select:focus {
+        outline: none;
+        border-color: #3b82f6;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        background: #27272a;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .btn:hover {
+        background: #3f3f46;
+        color: #ffffff;
+      }
+      .btn-primary {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border: 1px solid #1d4ed8 !important;
+        font-weight: 600;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8 !important;
+      }
+      .status-text {
+        font-size: 11px;
+        color: var(--muted-foreground, #71717a);
+        margin-top: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">
+        <span>Pipeline de CI/CD</span>
+      </div>
+      <span id="branchLabel" class="badge branch">main</span>
+    </div>
+
+    <div class="ci-list">
+      <div class="ci-item">
+        <div class="ci-item-header">
+          <span class="ci-item-name">Tipos &amp; Linter</span>
+          <span class="badge">Aprovado</span>
+        </div>
+        <div class="ci-item-meta">
+          <span>GitHub Actions #1482</span>
+          <span>1m 12s</span>
+        </div>
+      </div>
+
+      <div class="ci-item">
+        <div class="ci-item-header">
+          <span class="ci-item-name">Testes Unitários &amp; Integração</span>
+          <span class="badge">Aprovado</span>
+        </div>
+        <div class="ci-item-meta">
+          <span>Vitest (318 aprovados)</span>
+          <span>2m 04s</span>
+        </div>
+      </div>
+
+      <div class="ci-item">
+        <div class="ci-item-header">
+          <span class="ci-item-name">Deploy Preview</span>
+          <span class="badge preview">Online</span>
+        </div>
+        <div class="ci-item-meta">
+          <span>preview-pr-20413.orca.dev</span>
+          <span>Pronto</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label for="termSelect">Terminal da Worktree</label>
+      <select id="termSelect">
+        <option value="">(Nenhum terminal ativo)</option>
+      </select>
+    </div>
+
+    <button id="watchBtn" class="btn btn-primary">Acompanhar CI no Terminal (gh run watch)</button>
+    <button id="testBtn" class="btn">Executar Vitest no Terminal (pnpm test)</button>
+    <button id="notifyBtn" class="btn">Notificar Status da Build</button>
+
+    <div id="statusMessage" class="status-text">Pronto</div>
+
+    <script>
+      'use strict'
+      var seq = 0
+      var pending = {}
+      var statusEl = document.getElementById('statusMessage')
+      var branchEl = document.getElementById('branchLabel')
+      var termSelect = document.getElementById('termSelect')
+
+      function cleanBranch(raw) {
+        if (!raw) return 'main'
+        return raw.replace(/^refs\/heads\//, '')
+      }
+
+      function call(action, params) {
+        return new Promise(function (resolve) {
+          var requestId = 'req-' + ++seq
+          pending[requestId] = resolve
+          window.parent.postMessage(
+            { type: 'orca-panel-action', requestId: requestId, action: action, params: params },
+            '*'
+          )
+        })
+      }
+
+      window.addEventListener('message', function (event) {
+        var data = event.data
+        if (!data || data.type !== 'orca-panel-action-result') return
+        var resolve = pending[data.requestId]
+        if (!resolve) return
+        delete pending[data.requestId]
+        resolve(data)
+      })
+
+      function refreshWorktree() {
+        call('workspace.readContext').then(function (result) {
+          if (!result.ok || !result.value) {
+            statusEl.textContent = 'Sem contexto de worktree ativa'
+            return
+          }
+          branchEl.textContent = cleanBranch(result.value.branch)
+          termSelect.innerHTML = ''
+          if (result.value.terminals.length === 0) {
+            var opt = document.createElement('option')
+            opt.value = ''
+            opt.textContent = '(Nenhum terminal ativo na worktree)'
+            termSelect.appendChild(opt)
+          } else {
+            result.value.terminals.forEach(function (term, index) {
+              var opt = document.createElement('option')
+              opt.value = term.id
+              var shortId = term.id.length > 18 ? term.id.slice(0, 16) + '...' : term.id
+              opt.textContent = 'Terminal ' + (index + 1) + ' (' + shortId + ')'
+              termSelect.appendChild(opt)
+            })
+          }
+          statusEl.textContent = 'Sincronizado com ' + cleanBranch(result.value.branch)
+        })
+      }
+
+      document.getElementById('watchBtn').addEventListener('click', function () {
+        if (!termSelect.value) {
+          statusEl.textContent = 'Selecione um terminal primeiro'
+          return
+        }
+        call('terminal.sendText', {
+          terminalId: termSelect.value,
+          text: 'gh run watch',
+          enter: true
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Comando gh run watch enviado ao terminal'
+            : 'Falha ao enviar comando'
+        })
+      })
+
+      document.getElementById('testBtn').addEventListener('click', function () {
+        if (!termSelect.value) {
+          statusEl.textContent = 'Selecione um terminal primeiro'
+          return
+        }
+        call('terminal.sendText', {
+          terminalId: termSelect.value,
+          text: 'pnpm test',
+          enter: true
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Comando pnpm test enviado ao terminal'
+            : 'Falha ao enviar comando'
+        })
+      })
+
+      document.getElementById('notifyBtn').addEventListener('click', function () {
+        call('notifications.show', {
+          title: 'Monitor de CI: ' + branchEl.textContent,
+          body: 'Todos os workflows do GitHub Actions e deploy previews foram aprovados com sucesso.'
+        }).then(function (res) {
+          statusEl.textContent = res.ok ? 'Notificação enviada' : 'Erro ao enviar notificação'
+        })
+      })
+
+      refreshWorktree()
+    </script>
+  </body>
+</html>

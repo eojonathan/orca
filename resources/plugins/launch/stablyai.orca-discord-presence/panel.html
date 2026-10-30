@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Discord Rich Presence &amp; Game Activity</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 14px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        color: var(--foreground, #f4f4f5);
+        background: var(--background, #09090b);
+        line-height: 1.4;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border, #27272a);
+      }
+      .title {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #22c55e;
+        box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+        animation: pulse 2s infinite ease-in-out;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+      }
+      .branch-badge {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+        background: var(--secondary, #18181b);
+        border: 1px solid var(--border, #27272a);
+        padding: 2px 8px;
+        border-radius: 4px;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .discord-preview-card {
+        background: #1e1f22;
+        border: 1px solid #2b2d31;
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      }
+      .discord-header {
+        font-size: 11px;
+        font-weight: 700;
+        color: #b5bac1;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 10px;
+      }
+      .discord-body {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .discord-icon-container {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        background: #5865f2;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .discord-icon-svg {
+        width: 28px;
+        height: 28px;
+        fill: #ffffff;
+      }
+      .discord-small-badge {
+        position: absolute;
+        bottom: -4px;
+        right: -4px;
+        width: 18px;
+        height: 18px;
+        background: #23a55a;
+        border: 2px solid #1e1f22;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: #fff;
+      }
+      .discord-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow: hidden;
+      }
+      .discord-game-title {
+        font-weight: 700;
+        font-size: 13px;
+        color: #f2f3f5;
+      }
+      .discord-details {
+        font-size: 12px;
+        color: #dbdee1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .discord-state {
+        font-size: 12px;
+        color: #b5bac1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .discord-elapsed {
+        font-size: 11px;
+        color: #949ba4;
+        margin-top: 2px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        background: #27272a;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .btn:hover {
+        background: #3f3f46;
+        color: #ffffff;
+      }
+      .btn-primary {
+        background: #5865f2 !important;
+        color: #ffffff !important;
+        border: 1px solid #4752c4 !important;
+        font-weight: 600;
+      }
+      .btn-primary:hover {
+        background: #4752c4 !important;
+      }
+      .status-text {
+        font-size: 11px;
+        color: var(--muted-foreground, #71717a);
+        margin-top: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">
+        <span id="statusDot" class="pulse-dot"></span>
+        <span>Discord Game Activity</span>
+      </div>
+      <span id="branchLabel" class="branch-badge">Consultando branch...</span>
+    </div>
+
+    <div class="discord-preview-card">
+      <div class="discord-header">Jogando no Discord</div>
+      <div class="discord-body">
+        <div class="discord-icon-container">
+          <svg class="discord-icon-svg" viewBox="0 0 24 24">
+            <path
+              d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+              stroke="#ffffff"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+          <div class="discord-small-badge">&check;</div>
+        </div>
+        <div class="discord-info">
+          <div class="discord-game-title">Orca IDE</div>
+          <div id="previewDetails" class="discord-details">Worktree: Carregando...</div>
+          <div id="previewState" class="discord-state">Agente Ativo &bull; Paralelo</div>
+          <div id="previewElapsed" class="discord-elapsed">00:01 decorridos</div>
+        </div>
+      </div>
+    </div>
+
+    <button id="bridgeBtn" class="btn btn-primary">Iniciar Bridge no Terminal</button>
+    <button id="notifyBtn" class="btn">Notificar Status no Desktop</button>
+    <button id="refreshBtn" class="btn">Atualizar Dados da Worktree</button>
+
+    <div id="statusMessage" class="status-text">Conectado ao Discord IPC local</div>
+
+    <div
+      style="
+        margin-top: 14px;
+        padding: 10px;
+        background: #18181b;
+        border: 1px solid #27272a;
+        border-radius: 6px;
+        font-size: 11px;
+        color: #a1a1aa;
+        line-height: 1.4;
+      "
+    >
+      <strong style="color: #f4f4f5; display: block; margin-bottom: 4px">Dica Discord:</strong>
+      1. No Discord, vá em
+      <strong>Configura&ccedil;&otilde;es &rarr; Privacidade de Atividade</strong> e ative
+      <em>"Exibir atividade atual como mensagem de status"</em>.<br />
+      2. Clique no seu <strong>avatar/perfil</strong> (canto inferior esquerdo do Discord) para
+      visualizar o card ativo.
+    </div>
+
+    <script>
+      'use strict'
+      var seq = 0
+      var pending = {}
+      var statusEl = document.getElementById('statusMessage')
+      var branchEl = document.getElementById('branchLabel')
+      var previewDetails = document.getElementById('previewDetails')
+      var previewState = document.getElementById('previewState')
+      var previewElapsed = document.getElementById('previewElapsed')
+
+      var startTime = Date.now()
+
+      function cleanBranch(raw) {
+        if (!raw) return 'main'
+        return raw.replace(/^refs\/heads\//, '')
+      }
+
+      function updateTimer() {
+        var elapsedSec = Math.floor((Date.now() - startTime) / 1000)
+        var min = Math.floor(elapsedSec / 60)
+        var sec = elapsedSec % 60
+        var pad = function (n) {
+          return n < 10 ? '0' + n : n
+        }
+        previewElapsed.textContent = pad(min) + ':' + pad(sec) + ' decorridos'
+      }
+      setInterval(updateTimer, 1000)
+
+      function call(action, params) {
+        return new Promise(function (resolve) {
+          var requestId = 'req-' + ++seq
+          pending[requestId] = resolve
+          window.parent.postMessage(
+            { type: 'orca-panel-action', requestId: requestId, action: action, params: params },
+            '*'
+          )
+        })
+      }
+
+      window.addEventListener('message', function (event) {
+        var data = event.data
+        if (!data || data.type !== 'orca-panel-action-result') return
+        var resolve = pending[data.requestId]
+        if (!resolve) return
+        delete pending[data.requestId]
+        resolve(data)
+      })
+
+      function refreshContext() {
+        call('workspace.readContext').then(function (result) {
+          if (!result.ok || !result.value) {
+            statusEl.textContent = 'Sem contexto de worktree ativa'
+            return
+          }
+          var branch = cleanBranch(result.value.branch)
+          branchEl.textContent = branch
+          previewDetails.textContent = 'Worktree: ' + branch
+          previewState.textContent =
+            'Agente Ativo (' + (result.value.terminals.length || 1) + ' sessões)'
+          statusEl.textContent = 'Atividade sincronizada com ' + branch
+        })
+      }
+
+      document.getElementById('refreshBtn').addEventListener('click', refreshContext)
+
+      document.getElementById('bridgeBtn').addEventListener('click', function () {
+        call('workspace.readContext').then(function (result) {
+          if (
+            !result.ok ||
+            !result.value ||
+            !result.value.terminals ||
+            result.value.terminals.length === 0
+          ) {
+            statusEl.textContent = 'Abra um terminal na worktree primeiro'
+            return
+          }
+          var termId = result.value.terminals[0].id
+          var scriptPath =
+            'F:\\\\VC.VERSE\\\\PROJETOS\\\\orca\\\\resources\\\\plugins\\\\launch\\\\stablyai.orca-discord-presence\\\\bridge.cjs'
+          call('terminal.sendText', {
+            terminalId: termId,
+            text: 'node "' + scriptPath + '"',
+            enter: true
+          }).then(function (res) {
+            statusEl.textContent = res.ok
+              ? 'Bridge Discord iniciada no terminal!'
+              : 'Falha ao enviar comando ao terminal'
+          })
+        })
+      })
+
+      document.getElementById('notifyBtn').addEventListener('click', function () {
+        call('notifications.show', {
+          title: 'Discord Game Activity',
+          body: 'Rich Presence ativo no Discord: ' + previewDetails.textContent
+        }).then(function (res) {
+          statusEl.textContent = res.ok ? 'Notificação enviada com sucesso' : 'Falha ao notificar'
+        })
+      })
+
+      refreshContext()
+    </script>
+  </body>
+</html>

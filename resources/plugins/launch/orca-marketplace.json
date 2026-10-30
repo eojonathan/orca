@@ -11,6 +11,56 @@
       },
       "description": "A reviewed starter lifecycle for disposable Multipass workspaces.",
       "categories": ["vm-recipes", "official"]
+    },
+    {
+      "id": "stablyai.orca-agent-telemetry",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/stablyai/orca-agent-telemetry.git",
+        "ref": "v1.0.0"
+      },
+      "description": "Painel em tempo real de telemetria e controle de custos de IA: monitora tokens consumidos, custos estimados em USD, status de execução dos agentes e alertas de limite de orçamento por worktree.",
+      "categories": ["telemetry", "productivity", "official"]
+    },
+    {
+      "id": "stablyai.orca-ci-monitor",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/stablyai/orca-ci-monitor.git",
+        "ref": "v1.0.0"
+      },
+      "description": "Acompanhe pipelines de CI/CD, status de workflows do GitHub Actions e links de deploy preview diretamente da branch da sua worktree ativa, com execução rápida de comandos no terminal.",
+      "categories": ["ci-cd", "productivity", "official"]
+    },
+    {
+      "id": "stablyai.orca-services-inspector",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/stablyai/orca-services-inspector.git",
+        "ref": "v1.0.0"
+      },
+      "description": "Inspeção e diagnóstico de infraestrutura local: monitora integridade de bancos de dados (PostgreSQL, Redis), containers Docker e servidores de desenvolvimento ativos na worktree.",
+      "categories": ["developer-tools", "productivity", "official"]
+    },
+    {
+      "id": "stablyai.orca-pre-pr-sentinel",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/stablyai/orca-pre-pr-sentinel.git",
+        "ref": "v1.0.0"
+      },
+      "description": "Guardrails de segurança e qualidade antes de abrir Pull Requests: verifica vazamento acidental de segredos/.env, higiene do Git, status de conflitos e executa gates de typecheck e lint.",
+      "categories": ["developer-tools", "productivity", "official"]
+    },
+    {
+      "id": "stablyai.orca-discord-presence",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/stablyai/orca-discord-presence.git",
+        "ref": "v1.0.0"
+      },
+      "description": "Mostre suas sessões de desenvolvimento, branch ativa, agentes em execução e tempo decorrido no Game Activity / Rich Presence do seu Discord.",
+      "categories": ["developer-tools", "productivity", "official"]
     }
   ]
 }

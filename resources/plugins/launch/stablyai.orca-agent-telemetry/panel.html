@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Telemetria &amp; Custos de Agentes</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 14px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        color: var(--foreground, #f4f4f5);
+        background: var(--background, #09090b);
+        line-height: 1.4;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border, #27272a);
+      }
+      .title {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #22c55e;
+        box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+        animation: pulse 2s infinite ease-in-out;
+      }
+      .pulse-dot.idle {
+        background-color: #eab308;
+        box-shadow: 0 0 8px rgba(234, 179, 8, 0.7);
+        animation: none;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+      }
+      .branch-badge {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+        background: var(--secondary, #18181b);
+        border: 1px solid var(--border, #27272a);
+        padding: 2px 8px;
+        border-radius: 4px;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .card {
+        background: var(--card, #18181b);
+        border: 1px solid var(--border, #27272a);
+        border-radius: var(--radius, 8px);
+        padding: 12px;
+      }
+      .card-full {
+        grid-column: span 2;
+      }
+      .card-label {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--muted-foreground, #a1a1aa);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 6px;
+      }
+      .card-value {
+        font-size: 19px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .card-subtext {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+        margin-top: 3px;
+      }
+      .progress-bar-bg {
+        height: 7px;
+        background: #27272a;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: #3b82f6;
+        width: 21%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        background: #27272a;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .btn:hover {
+        background: #3f3f46;
+        color: #ffffff;
+      }
+      .btn-primary {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border: 1px solid #1d4ed8 !important;
+        font-weight: 600;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8 !important;
+      }
+      .status-text {
+        font-size: 11px;
+        color: var(--muted-foreground, #71717a);
+        margin-top: 10px;
+        text-align: center;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">
+        <span id="agentDot" class="pulse-dot"></span>
+        <span id="agentStatusTitle">Agente Ativo</span>
+      </div>
+      <span id="activeBranch" class="branch-badge">Consultando branch...</span>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-label">Custo da Sessão</div>
+        <div id="costValue" class="card-value">$0.042</div>
+        <div class="card-subtext">Média Sonnet / GPT-4o</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Total de Tokens</div>
+        <div id="tokenValue" class="card-value">14.8k</div>
+        <div class="card-subtext">Entrada + saída</div>
+      </div>
+      <div class="card card-full">
+        <div class="card-label">Consumo do Orçamento (Teto: $2.00)</div>
+        <div class="progress-bar-bg">
+          <div id="budgetBar" class="progress-bar-fill"></div>
+        </div>
+        <div
+          class="card-subtext"
+          style="display: flex; justify-content: space-between; margin-top: 6px"
+        >
+          <span>$0.042 consumido</span>
+          <span>$1.958 restante</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Turnos Ativos</div>
+        <div id="turnsValue" class="card-value">8</div>
+        <div class="card-subtext">Nesta worktree</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Status do Agente</div>
+        <div id="agentState" class="card-value" style="font-size: 15px; color: #22c55e">
+          Executando
+        </div>
+        <div class="card-subtext">Processando prompt</div>
+      </div>
+    </div>
+
+    <button id="refreshBtn" class="btn btn-primary">Atualizar Contexto da Worktree</button>
+    <button id="alertBtn" class="btn">Testar Notificação de Orçamento</button>
+
+    <div id="statusMessage" class="status-text">Conectado ao Host Orca</div>
+
+    <script>
+      'use strict'
+      var seq = 0
+      var pending = {}
+      var statusEl = document.getElementById('statusMessage')
+      var branchEl = document.getElementById('activeBranch')
+
+      function cleanBranch(raw) {
+        if (!raw) return 'Sem branch'
+        return raw.replace(/^refs\/heads\//, '')
+      }
+
+      function call(action, params) {
+        return new Promise(function (resolve) {
+          var requestId = 'req-' + ++seq
+          pending[requestId] = resolve
+          window.parent.postMessage(
+            { type: 'orca-panel-action', requestId: requestId, action: action, params: params },
+            '*'
+          )
+        })
+      }
+
+      window.addEventListener('message', function (event) {
+        var data = event.data
+        if (!data || data.type !== 'orca-panel-action-result') return
+        var resolve = pending[data.requestId]
+        if (!resolve) return
+        delete pending[data.requestId]
+        resolve(data)
+      })
+
+      function refreshContext() {
+        call('workspace.readContext').then(function (result) {
+          if (!result.ok) {
+            statusEl.textContent = 'Erro de contexto: ' + (result.error || result.errorCode)
+            return
+          }
+          if (!result.value) {
+            branchEl.textContent = 'Nenhuma worktree'
+            statusEl.textContent = 'Em espera - foque em uma aba de worktree'
+            return
+          }
+          branchEl.textContent = cleanBranch(result.value.branch)
+          statusEl.textContent = 'Worktree: ' + cleanBranch(result.value.branch)
+        })
+      }
+
+      document.getElementById('refreshBtn').addEventListener('click', refreshContext)
+
+      document.getElementById('alertBtn').addEventListener('click', function () {
+        call('notifications.show', {
+          title: 'Alerta de Telemetria do Agente',
+          body: 'O custo da sessão atual está dentro dos limites operacionais ($0.042).'
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Notificação de alerta enviada'
+            : 'Falha ao enviar notificação'
+        })
+      })
+
+      refreshContext()
+    </script>
+  </body>
+</html>

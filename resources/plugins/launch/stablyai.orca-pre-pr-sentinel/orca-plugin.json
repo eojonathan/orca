@@ -1,0 +1,34 @@
+{
+  "manifestVersion": 1,
+  "id": "orca-pre-pr-sentinel",
+  "publisher": "stablyai",
+  "name": "Pre-PR & Code Quality Sentinel",
+  "version": "1.0.0",
+  "description": "Guardrails de segurança e qualidade antes de abrir Pull Requests: verifica vazamento acidental de segredos/.env, higiene do Git, status de conflitos e executa gates de typecheck e lint.",
+  "repository": "https://github.com/stablyai/orca-pre-pr-sentinel",
+  "engines": { "orca": ">=1.4.0" },
+  "pluginApi": 1,
+  "main": "main.mjs",
+  "contributes": {
+    "panels": [
+      {
+        "id": "pre-pr-sentinel",
+        "title": "Pre-PR Sentinel",
+        "icon": "flag",
+        "entry": "panel.html"
+      }
+    ],
+    "commands": [
+      {
+        "id": "sentinel.runAudit",
+        "title": "Sentinel: Run Pre-PR Audit"
+      }
+    ]
+  },
+  "capabilities": [
+    { "kind": "workspace:read" },
+    { "kind": "terminal:send" },
+    { "kind": "notifications:show" },
+    { "kind": "storage" }
+  ]
+}

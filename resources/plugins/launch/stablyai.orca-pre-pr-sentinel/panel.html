@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sentinela de Pré-PR &amp; Qualidade</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 14px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        color: var(--foreground, #f4f4f5);
+        background: var(--background, #09090b);
+        line-height: 1.4;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border, #27272a);
+      }
+      .title {
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .branch-badge {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+        background: var(--secondary, #18181b);
+        border: 1px solid var(--border, #27272a);
+        padding: 2px 8px;
+        border-radius: 4px;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .gate-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .gate-item {
+        background: var(--card, #18181b);
+        border: 1px solid var(--border, #27272a);
+        border-radius: var(--radius, 8px);
+        padding: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .gate-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .gate-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .gate-name {
+        font-weight: 600;
+        font-size: 12px;
+        color: #ffffff;
+      }
+      .gate-desc {
+        font-size: 11px;
+        color: var(--muted-foreground, #a1a1aa);
+      }
+      .control-group {
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--muted-foreground, #a1a1aa);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      select {
+        width: 100%;
+        padding: 7px 10px;
+        background: #18181b;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        font-size: 12px;
+      }
+      select:focus {
+        outline: none;
+        border-color: #3b82f6;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 8px 12px;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        background: #27272a;
+        color: #f4f4f5;
+        border: 1px solid #3f3f46;
+        border-radius: var(--radius, 6px);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .btn:hover {
+        background: #3f3f46;
+        color: #ffffff;
+      }
+      .btn-primary {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border: 1px solid #1d4ed8 !important;
+        font-weight: 600;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8 !important;
+      }
+      .status-text {
+        font-size: 11px;
+        color: var(--muted-foreground, #71717a);
+        margin-top: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">
+        <span>Checklist de Guardrails de PR</span>
+      </div>
+      <span id="branchName" class="branch-badge">Consultando branch...</span>
+    </div>
+
+    <div class="gate-list">
+      <div class="gate-item">
+        <div class="gate-icon">&check;</div>
+        <div class="gate-content">
+          <span class="gate-name">Varredura de Vazamento de Segredos</span>
+          <span class="gate-desc">Nenhum segredo ou chave de API não comitada detectada.</span>
+        </div>
+      </div>
+
+      <div class="gate-item">
+        <div class="gate-icon">&check;</div>
+        <div class="gate-content">
+          <span class="gate-name">Higiene do Git na Worktree</span>
+          <span class="gate-desc"
+            >Sem marcadores de conflito ou arquivos temporários residuais.</span
+          >
+        </div>
+      </div>
+
+      <div class="gate-item">
+        <div class="gate-icon">&check;</div>
+        <div class="gate-content">
+          <span class="gate-name">Baseline de Tipos &amp; Linter</span>
+          <span class="gate-desc">Meta de zero regressões de TypeScript e ESLint.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label for="termSelect">Terminal da Worktree</label>
+      <select id="termSelect">
+        <option value="">(Nenhum terminal ativo)</option>
+      </select>
+    </div>
+
+    <button id="gateBtn" class="btn btn-primary">Executar Verificações Pré-Voo no Terminal</button>
+    <button id="gitStatusBtn" class="btn">Verificar Status Git Resumido</button>
+    <button id="notifyBtn" class="btn">Notificar Prontidão para PR</button>
+
+    <div id="statusMessage" class="status-text">Pronto</div>
+
+    <script>
+      'use strict'
+      var seq = 0
+      var pending = {}
+      var statusEl = document.getElementById('statusMessage')
+      var branchEl = document.getElementById('branchName')
+      var termSelect = document.getElementById('termSelect')
+
+      function cleanBranch(raw) {
+        if (!raw) return 'Sem branch'
+        return raw.replace(/^refs\/heads\//, '')
+      }
+
+      function call(action, params) {
+        return new Promise(function (resolve) {
+          var requestId = 'req-' + ++seq
+          pending[requestId] = resolve
+          window.parent.postMessage(
+            { type: 'orca-panel-action', requestId: requestId, action: action, params: params },
+            '*'
+          )
+        })
+      }
+
+      window.addEventListener('message', function (event) {
+        var data = event.data
+        if (!data || data.type !== 'orca-panel-action-result') return
+        var resolve = pending[data.requestId]
+        if (!resolve) return
+        delete pending[data.requestId]
+        resolve(data)
+      })
+
+      function refreshWorktree() {
+        call('workspace.readContext').then(function (result) {
+          if (!result.ok || !result.value) {
+            branchEl.textContent = 'Sem worktree ativa'
+            return
+          }
+          branchEl.textContent = cleanBranch(result.value.branch)
+          termSelect.innerHTML = ''
+          if (result.value.terminals.length === 0) {
+            var opt = document.createElement('option')
+            opt.value = ''
+            opt.textContent = '(Nenhum terminal ativo)'
+            termSelect.appendChild(opt)
+          } else {
+            result.value.terminals.forEach(function (term, index) {
+              var opt = document.createElement('option')
+              opt.value = term.id
+              var shortId = term.id.length > 18 ? term.id.slice(0, 16) + '...' : term.id
+              opt.textContent = 'Terminal ' + (index + 1) + ' (' + shortId + ')'
+              termSelect.appendChild(opt)
+            })
+          }
+        })
+      }
+
+      document.getElementById('gateBtn').addEventListener('click', function () {
+        if (!termSelect.value) {
+          statusEl.textContent = 'Selecione um terminal primeiro'
+          return
+        }
+        call('terminal.sendText', {
+          terminalId: termSelect.value,
+          text: 'pnpm run check:code-quality:changed',
+          enter: true
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Verificação iniciada no terminal'
+            : 'Falha ao enviar comando'
+        })
+      })
+
+      document.getElementById('gitStatusBtn').addEventListener('click', function () {
+        if (!termSelect.value) {
+          statusEl.textContent = 'Selecione um terminal primeiro'
+          return
+        }
+        call('terminal.sendText', {
+          terminalId: termSelect.value,
+          text: 'git status --short',
+          enter: true
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Comando git status enviado ao terminal'
+            : 'Falha ao enviar comando'
+        })
+      })
+
+      document.getElementById('notifyBtn').addEventListener('click', function () {
+        call('notifications.show', {
+          title: 'Sentinela de PR: Pronto',
+          body: 'Todos os gates pré-voo foram verificados. Pronto para abrir o Pull Request!'
+        }).then(function (res) {
+          statusEl.textContent = res.ok
+            ? 'Notificação de prontidão para PR enviada'
+            : 'Falha ao enviar notificação'
+        })
+      })
+
+      refreshWorktree()
+    </script>
+  </body>
+</html>

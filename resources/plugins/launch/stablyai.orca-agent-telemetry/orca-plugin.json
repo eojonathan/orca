@@ -1,0 +1,35 @@
+{
+  "manifestVersion": 1,
+  "id": "orca-agent-telemetry",
+  "publisher": "stablyai",
+  "name": "Agent Telemetry & Cost Dashboard",
+  "version": "1.0.0",
+  "description": "Painel em tempo real de telemetria e controle de custos de IA: monitora tokens consumidos, custos estimados em USD, status de execução dos agentes e alertas de limite de orçamento por worktree.",
+  "repository": "https://github.com/stablyai/orca-agent-telemetry",
+  "engines": { "orca": ">=1.4.0" },
+  "pluginApi": 1,
+  "main": "main.mjs",
+  "contributes": {
+    "panels": [
+      {
+        "id": "agent-telemetry",
+        "title": "Agent Telemetry",
+        "icon": "activity",
+        "entry": "panel.html"
+      }
+    ],
+    "commands": [
+      {
+        "id": "telemetry.resetStats",
+        "title": "Reset Agent Telemetry Stats"
+      }
+    ],
+    "events": [{ "on": "agent.status.changed" }, { "on": "worktree.created" }]
+  },
+  "capabilities": [
+    { "kind": "workspace:read" },
+    { "kind": "storage" },
+    { "kind": "notifications:show" },
+    { "kind": "events:subscribe" }
+  ]
+}

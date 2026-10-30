@@ -1,0 +1,48 @@
+{
+  "manifestVersion": 1,
+  "id": "orca-discord-presence",
+  "publisher": "stablyai",
+  "name": "Discord Rich Presence & Game Activity",
+  "version": "1.0.0",
+  "description": "Mostre suas sessões de desenvolvimento, branch ativa, agentes em execução e tempo decorrido no Game Activity / Rich Presence do seu Discord.",
+  "repository": "https://github.com/stablyai/orca-discord-presence",
+  "engines": { "orca": ">=1.4.0" },
+  "pluginApi": 1,
+  "main": "main.mjs",
+  "contributes": {
+    "panels": [
+      {
+        "id": "discord-presence",
+        "title": "Discord Activity",
+        "icon": "bot",
+        "entry": "panel.html"
+      }
+    ],
+    "commands": [
+      {
+        "id": "discord.togglePresence",
+        "title": "Discord: Alternar Game Activity"
+      },
+      {
+        "id": "discord.updateActivity",
+        "title": "Discord: Atualizar Status Agora"
+      },
+      {
+        "id": "discord.reconnect",
+        "title": "Discord: Reconectar ao Aplicativo"
+      }
+    ],
+    "events": [
+      { "on": "agent.status.changed" },
+      { "on": "worktree.created" },
+      { "on": "worktree.removed" }
+    ]
+  },
+  "capabilities": [
+    { "kind": "workspace:read" },
+    { "kind": "terminal:send" },
+    { "kind": "notifications:show" },
+    { "kind": "storage" },
+    { "kind": "events:subscribe" }
+  ]
+}
