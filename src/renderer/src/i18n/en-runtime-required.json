@@ -1153,7 +1153,6 @@
             }
           },
           "tooltip": {
-            "minutesAgo": "{{minutes}}m ago",
             "rateLimitResetsAvailable_one": "{{count}} rate-limit reset available",
             "rateLimitResetsAvailable_other": "{{count}} rate-limit resets available"
           },
