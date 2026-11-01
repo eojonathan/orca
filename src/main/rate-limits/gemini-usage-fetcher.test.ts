@@ -21,6 +21,9 @@ vi.mock('node:fs/promises', () => ({
 vi.mock('../integration-credential-file', () => ({
   writeCredentialFileAtomic: vi.fn().mockReturnValue(true)
 }))
+vi.mock('./antigravity-local-usage-fetcher', () => ({
+  fetchAntigravityLocalRateLimits: vi.fn().mockResolvedValue(null)
+}))
 
 import { fetchGeminiRateLimits } from './gemini-usage-fetcher'
 
