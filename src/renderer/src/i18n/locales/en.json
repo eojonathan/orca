@@ -7560,7 +7560,13 @@
             }
           },
           "remoteScopeLocalAccountsKeptHostPicker": "Accounts managed on this desktop are unchanged. Choose this computer in the Host menu at the top of Settings to view them.",
-          "apiKeyUpdateFailed": "MiniMax API key update failed."
+          "apiKeyUpdateFailed": "MiniMax API key update failed.",
+          "antigravityTitle": "Antigravity",
+          "antigravityDescription": "Configure Antigravity provider settings.",
+          "useAntigravityCredentials": "Use Antigravity credentials",
+          "useAntigravityCredentialsDescription": "Extracts OAuth credentials from your local Antigravity installation to authenticate with Google. This uses credentials issued to the Antigravity app, not Orca. May break if Google updates Antigravity. Use at your own risk.",
+          "useAntigravityCredentialsExp": "Use Antigravity credentials (experimental)",
+          "useAntigravityCredentialsWithRuntime": "Extracts OAuth credentials from your local Antigravity installation to authenticate with Google for {{value0}}. This uses credentials issued to the Antigravity app, not Orca. May break if Google updates Antigravity. Use at your own risk."
         },
         "AdvancedPane": {
           "40b29e0bf3": "Restart",
@@ -9635,7 +9641,10 @@
                 "codingPlan": "coding plan",
                 "rateLimit": "rate limit"
               }
-            }
+            },
+            "useAntigravityCredentials": "Use Antigravity credentials",
+            "useAntigravityCredentialsDescription": "Extracts OAuth credentials from your local Antigravity installation to authenticate with Google.",
+            "antigravity": "antigravity"
           }
         },
         "advanced": {
