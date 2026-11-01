@@ -4872,7 +4872,9 @@
             "updatedAgo": "Updated {{time}}",
             "notYetUpdated": "Not yet updated",
             "rateLimitResetsAvailable_one": "{{count}} rate-limit reset available",
-            "rateLimitResetsAvailable_other": "{{count}} rate-limit resets available"
+            "rateLimitResetsAvailable_other": "{{count}} rate-limit resets available",
+            "resetsNow": "Resets now",
+            "resetsIn": "Resets in {{value0}}"
           },
           "SshTargetStatusRow": {
             "sshHost": "SSH Host"

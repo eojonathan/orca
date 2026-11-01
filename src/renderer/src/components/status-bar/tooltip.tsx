@@ -42,12 +42,18 @@ export function formatTimeAgo(ts: number): string {
   }
   const mins = Math.floor(diff / 60_000)
   if (mins < 60) {
-    return translate('auto.components.status.bar.tooltip.minutesAgo', '{{minutes}}m ago', {
-      minutes: mins
-    })
-  }
   const hours = Math.floor(mins / 60)
   return translate('auto.components.status.bar.tooltip.hoursAgo', '{{hours}}h ago', { hours })
+}
+
+export function formatLocalizedResetCountdown(ms: number): string {
+  const duration = formatResetDuration(ms)
+  return duration === 'now'
+    ? translate('auto.components.status.bar.tooltip.resetsNow', 'Resets now')
+    : translate('auto.components.status.bar.tooltip.resetsIn', 'Resets in {{value0}}', {
+        value0: duration
+      })
+}
 }
 
 // Preserve tooltip imports while sharing countdown formatting with mobile.
@@ -218,7 +224,7 @@ function ProviderRateLimitWindowSection({
   }
   const usedPct = clampUsedPercent(window.usedPercent)
   const displayedPct = getDisplayedUsagePercentage(usedPct, usagePercentageDisplay)
-  const resetLabel = window.resetsAt ? formatResetCountdown(window.resetsAt - now) : null
+  const resetLabel = window.resetsAt ? formatLocalizedResetCountdown(window.resetsAt - now) : null
 
   return (
     <div className="space-y-1">
@@ -302,8 +308,13 @@ export function ProviderPanel({
   }
 
   const updatedAgo = p.updatedAt
+<<<<<<< HEAD
     ? translate('auto.components.status.bar.tooltip.updatedAgo', 'Updated {{time}}', {
         time: formatTimeAgo(p.updatedAt)
+=======
+    ? translate('auto.components.status.bar.tooltip.updatedTimeAgo', 'Updated {{value0}}', {
+        value0: formatTimeAgo(p.updatedAt)
+>>>>>>> 783d5ebb91 (feat(status-bar): localize reset countdown and updated time ago strings)
       })
     : translate('auto.components.status.bar.tooltip.notYetUpdated', 'Not yet updated')
   const resetCreditCount =
