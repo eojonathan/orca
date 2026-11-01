@@ -108,9 +108,7 @@ export const MAX_ACTIVE_FAILURE_STREAK = 8
 export const INDIVIDUALLY_REFRESHABLE_PROVIDERS: ReadonlySet<ActiveRateLimitProvider> = new Set([
   'claude',
   'codex',
-  'grok',
-  'antigravity',
-  'gemini'
+  'grok'
 ])
 export const STALE_THRESHOLD_MS = 30 * 60 * 1000
 // 429 Retry-After and an idle Claude login's lapsed token outlast generic expiry; keep informational quota visible.
