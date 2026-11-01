@@ -625,6 +625,15 @@
         }
       },
       "settings": {
+        "AccountsPane": {
+          "0c64dc2a64": "Gemini CLI (legacy)",
+          "0c7f915b01": "Use Gemini CLI credentials",
+          "96f3649526": "Use Gemini CLI credentials (experimental)",
+          "973741a871": "Keep existing Gemini CLI sessions available. Gemini credentials do not sign you into Antigravity.",
+          "c2aee76420": "Extracts OAuth credentials from your local Gemini CLI installation to authenticate with Google for {{value0}}. This uses credentials issued to the Gemini CLI app, not Orca. May break if Google updates the CLI. Use at your own risk.",
+          "d676c41fc6": "Extracts OAuth credentials from your local Gemini CLI installation to authenticate with Google. This uses credentials issued to the Gemini CLI app, not Orca. May break if Google updates the CLI. Use at your own risk.",
+          "useAntigravityCredentialsExp": "Use Antigravity credentials (experimental)"
+        },
         "ComputerUsePane": {
           "07bbe4c4cb": "Screenshots",
           "0c9a33f468": "Capture app windows so agents can inspect visual state.",
@@ -701,6 +710,13 @@
           "found_theme_other": "Found {{value0}} themes",
           "import_theme_one": "Import {{value0}} Theme",
           "import_theme_other": "Import {{value0}} Themes"
+        },
+        "accounts": {
+          "search": {
+            "b7c2cee442": "experimental",
+            "bada4a3218": "Extracts OAuth credentials from your local Gemini CLI installation to authenticate with Google.",
+            "d819755b02": "Use Gemini CLI credentials"
+          }
         },
         "agent-awake-copy": {
           "modeDescriptionDefault": "Choose On, Agent, or Off. Agent mode stays awake while agents are working. Orca also asks this device to stay awake when the lid is closed, subject to its power policy.",
@@ -1153,6 +1169,7 @@
             }
           },
           "tooltip": {
+            "minutesAgo": "{{minutes}}m ago",
             "rateLimitResetsAvailable_one": "{{count}} rate-limit reset available",
             "rateLimitResetsAvailable_other": "{{count}} rate-limit resets available"
           },
@@ -1881,26 +1898,6 @@
         "waitForStart": "Wait for the agent to finish starting.",
         "waitForTurn": "Wait for the agent to finish responding, or stop it.",
         "waitMoment": "Wait a moment."
-      },
-      "usageLimitActions": {
-        "continueNow": "Continue Now",
-        "leadIn": "Continue this chat without waiting:",
-        "switchAccount": "Switch Account",
-        "addAccount": "Add Account…",
-        "accountUnavailable": "This chat cannot move to another account. Hand it off to another agent instead."
-      },
-      "resumeInNewChat": {
-        "historyUnavailable": "Orca couldn't read the conversation",
-        "chatHeld": "another chat or terminal is using it",
-        "startFailedAfterClose": "{{agent}}'s terminal was closed, but the chat couldn't open: {{reason}}. Your conversation is saved. Open it from Session History.",
-        "notSavedAfterClose": "{{agent}}'s terminal was closed, but {{agent}} hadn't saved this conversation yet, so it can't continue in chat. Start a new chat instead.",
-        "otherTerminalAfterClose": "{{agent}}'s terminal was closed, but {{agent}} is running this conversation in another terminal. Quit it there or close that terminal, then open the conversation from Session History.",
-        "chatFailedAfterClose": "{{agent}}'s terminal was closed, but the chat couldn't open. Your conversation is saved. Open it from Session History.",
-        "terminalChanged": "The terminal running {{agent}} changed before it closed, so Orca left it open. Try again.",
-        "terminalExitUnproven": "Orca closed {{agent}}'s terminal but couldn't confirm it stopped, so the chat didn't open. Check the host connection, then open the conversation from Session History.",
-        "resumeFailed": "{{agent}} couldn't continue in chat. Check this terminal and the host connection, then try again.",
-        "exitUnconfirmedFromTerminal": "{{agent}} is still running this conversation in this terminal. Quit {{agent}} here, then open this conversation from Session History.",
-        "exitUnconfirmed": "{{agent}} is running this conversation in another terminal. Quit it there or close that terminal, then try again."
       }
     },
     "onboarding": {
