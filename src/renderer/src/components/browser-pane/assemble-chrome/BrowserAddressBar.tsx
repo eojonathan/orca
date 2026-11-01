@@ -163,10 +163,7 @@ export default function BrowserAddressBar({
     onLeave
   })
 
-  const handleClearHistory = useClearAddressBarHistory({
-    clearSuggestionPreview,
-    restoreTypedQuery
-  })
+  const handleClearHistory = useClearAddressBarHistory(restoreTypedQuery)
 
   // Why nothing for an empty bar: row 0 always shows what Enter does, and there Enter does nothing.
   const selectedValue =
