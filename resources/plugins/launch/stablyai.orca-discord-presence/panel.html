@@ -219,9 +219,10 @@
       </div>
     </div>
 
-    <button id="bridgeBtn" class="btn btn-primary">Iniciar Bridge no Terminal</button>
+    <button id="syncNowBtn" class="btn btn-primary">Sincronizar com Discord Agora</button>
+    <button id="refreshBtn" class="btn">Atualizar Dados do Projeto</button>
     <button id="notifyBtn" class="btn">Notificar Status no Desktop</button>
-    <button id="refreshBtn" class="btn">Atualizar Dados da Worktree</button>
+    <button id="bridgeBtn" class="btn" style="opacity: 0.7; font-size: 11px">Iniciar Bridge no Terminal (Opcional)</button>
 
     <div id="statusMessage" class="status-text">Conectado ao Discord IPC local</div>
 
@@ -296,19 +297,28 @@
       function refreshContext() {
         call('workspace.readContext').then(function (result) {
           if (!result.ok || !result.value) {
-            statusEl.textContent = 'Sem contexto de worktree ativa'
+            statusEl.textContent = 'Orca IDE ativo'
             return
           }
+          var project = result.value.displayName || 'Orca'
           var branch = cleanBranch(result.value.branch)
-          branchEl.textContent = branch
-          previewDetails.textContent = 'Worktree: ' + branch
-          previewState.textContent =
-            'Agente Ativo (' + (result.value.terminals.length || 1) + ' sessões)'
-          statusEl.textContent = 'Atividade sincronizada com ' + branch
+          branchEl.textContent = branch || project
+          var detailsText = branch ? project + ' (' + branch + ')' : project
+          previewDetails.textContent = detailsText
+          var termCount = (result.value.terminals && result.value.terminals.length) || 1
+          previewState.textContent = 'Agente Ativo (' + termCount + ' sessões)'
+          statusEl.textContent = 'Sincronizado: ' + detailsText
         })
       }
 
       document.getElementById('refreshBtn').addEventListener('click', refreshContext)
+
+      document.getElementById('syncNowBtn').addEventListener('click', function () {
+        refreshContext()
+        call('commands.run', { command: 'discord.updateActivity' }).then(function () {
+          statusEl.textContent = 'Presença sincronizada com o Discord!'
+        })
+      })
 
       document.getElementById('bridgeBtn').addEventListener('click', function () {
         call('workspace.readContext').then(function (result) {
@@ -322,8 +332,7 @@
             return
           }
           var termId = result.value.terminals[0].id
-          var scriptPath =
-            'F:\\\\VC.VERSE\\\\PROJETOS\\\\orca\\\\resources\\\\plugins\\\\launch\\\\stablyai.orca-discord-presence\\\\bridge.cjs'
+          var scriptPath = 'resources/plugins/launch/stablyai.orca-discord-presence/bridge.cjs'
           call('terminal.sendText', {
             terminalId: termId,
             text: 'node "' + scriptPath + '"',

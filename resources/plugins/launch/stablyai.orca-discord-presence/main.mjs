@@ -158,6 +158,28 @@ export default function activate(orca) {
     }, RECONNECT_DELAY_MS)
   }
 
+  function applyWorkspaceContext(context) {
+    if (!context) {
+      currentActivity.details = 'Desenvolvendo no Orca IDE'
+      setActivity(currentActivity)
+      return
+    }
+    const project = context.displayName || 'Orca'
+    const branch = context.branch ? context.branch.replace(/^refs\/heads\//, '') : ''
+    currentActivity.details = branch ? `${project} (${branch})` : project
+    setActivity(currentActivity)
+  }
+
+  async function syncCurrentContext() {
+    try {
+      const res = await orca.host.call('workspace.readContext')
+      const ctx = res && typeof res === 'object' && 'value' in res ? res.value : res
+      applyWorkspaceContext(ctx)
+    } catch {
+      setActivity(currentActivity)
+    }
+  }
+
   orca.commands.register('discord.togglePresence', async () => {
     isEnabled = !isEnabled
     if (isEnabled) {
@@ -165,7 +187,7 @@ export default function activate(orca) {
       if (!isReady) {
         connect()
       } else {
-        setActivity(currentActivity)
+        syncCurrentContext()
       }
     } else {
       setActivity(null)
@@ -185,6 +207,8 @@ export default function activate(orca) {
       if (args.state) {
         currentActivity.state = String(args.state)
       }
+    } else {
+      await syncCurrentContext()
     }
     setActivity(currentActivity)
     return { ok: true, isReady, currentActivity }
@@ -195,16 +219,9 @@ export default function activate(orca) {
     return { ok: true }
   })
 
-  async function syncInitialContext() {
-    try {
-      const res = await orca.host.call('workspace.readContext')
-      if (res?.value?.branch) {
-        const branch = res.value.branch.replace(/^refs\/heads\//, '')
-        currentActivity.details = `Worktree: ${branch}`
-      }
-      setActivity(currentActivity)
-    } catch {}
-  }
+  orca.events.on('workspace.changed', (payload) => {
+    applyWorkspaceContext(payload?.context)
+  })
 
   orca.events.on('agent.status.changed', (payload) => {
     const isWorking =
@@ -214,20 +231,33 @@ export default function activate(orca) {
       : payload.state === 'idle'
         ? 'Agente Pronto'
         : `Agente: ${payload.state}`
-    currentActivity.state = `${stateName} (${payload.worktreeId ? 'worktree ativa' : 'global'})`
+    const paneTitle = payload.title ? ` • ${payload.title}` : ''
+    currentActivity.state = `${stateName}${paneTitle}`
     setActivity(currentActivity)
   })
 
   orca.events.on('worktree.created', (payload) => {
-    currentActivity.details = `Worktree: ${payload.worktreeId}`
-    setActivity(currentActivity)
+    if (payload?.branch) {
+      const branch = payload.branch.replace(/^refs\/heads\//, '')
+      currentActivity.details = `Worktree: ${branch}`
+      setActivity(currentActivity)
+    } else {
+      syncCurrentContext()
+    }
   })
 
   orca.events.on('worktree.removed', () => {
-    setActivity(currentActivity)
+    syncCurrentContext()
   })
 
   // Start connection immediately and fetch initial context
   connect()
-  syncInitialContext()
+  syncCurrentContext()
+
+  // Heartbeat sync ensures active workspace is updated when navigating between projects
+  setInterval(() => {
+    if (isEnabled && isReady) {
+      syncCurrentContext()
+    }
+  }, 4000)
 }

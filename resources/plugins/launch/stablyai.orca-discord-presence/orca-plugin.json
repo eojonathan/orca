@@ -34,6 +34,7 @@
     ],
     "events": [
       { "on": "agent.status.changed" },
+      { "on": "workspace.changed" },
       { "on": "worktree.created" },
       { "on": "worktree.removed" }
     ]
